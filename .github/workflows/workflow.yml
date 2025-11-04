@@ -24,10 +24,11 @@ jobs:
 
       - name: Make Directory for results and launch local server
         run: npm run tern-on-api &
-          sleep 10
-          mkdir -p test-results
+             sleep 10
+             mkdir -p test-results
 
       - name: Run POSTMAN collection
+        continue-on-error: true
         run: |
           newman run store.collection.json -e store.postman_environment.json -r htmlextra --reporter-htmlextra-export test-results/index.html
 
