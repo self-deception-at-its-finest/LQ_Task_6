@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "67d91bc7-aa8b-4727-aad5-9abcb298ed08",
-		"name": "store",
+		"_postman_id": "f30e6c8f-2d0f-4244-9da5-00c20192edc5",
+		"name": "Test store",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "18317683"
+		"_exporter_id": "45293514",
+		"_collection_link": "https://rafaam-5959821.postman.co/workspace/Rafaam's-Workspace~d79c8f22-12bf-4211-8787-92944e20addc/collection/45293514-f30e6c8f-2d0f-4244-9da5-00c20192edc5?action=share&source=collection_link&creator=45293514"
 	},
 	"item": [
 		{
@@ -24,7 +25,11 @@
 									"});\r",
 									"pm.test(\"Content-Type is present\", function () {\r",
 									"    pm.response.to.have.header(\"Content-Type\");\r",
-									"});"
+									"});\r",
+									"pm.test('response has array with products', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.length).to.eql(3)\r",
+									"})"
 								],
 								"type": "text/javascript"
 							}
@@ -46,18 +51,230 @@
 					"response": []
 				},
 				{
-					"name": "Get product by ID",
+					"name": "Products list pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()\r",
+									"\r",
+									"\r",
+									"pm.test(\"Products list page size is 2\", () => {\r",
+									"    pm.expect(responseJson.length).to.eql(2)\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/3",
+							"raw": "{{baseUrl}}/products?page=1&pageSize=2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Products list sorting by name ASC",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()\r",
+									"\r",
+									"\r",
+									"pm.test(\"Products list sorting by name ASC works properly\", () => {\r",
+									"    const sorted = [...responseJson].sort((a, b) => a.name.localeCompare(b.name))\r",
+									"    pm.expect(responseJson).to.eql(sorted)\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?sortKey=name&sortOrder=ASC",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "sortKey",
+									"value": "name"
+								},
+								{
+									"key": "sortOrder",
+									"value": "ASC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Products list sorting by name DESC",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()\r",
+									"\r",
+									"\r",
+									"pm.test(\"Products list sorting by name DESC works properly\", () => {\r",
+									"    const sorted = [...responseJson].sort((a, b) => a.name.localeCompare(b.name)).reverse()\r",
+									"    pm.expect(responseJson).to.eql(sorted)\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?sortKey=name&sortOrder=DESC",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "sortKey",
+									"value": "name"
+								},
+								{
+									"key": "sortOrder",
+									"value": "DESC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get existing product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 100ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"X-Powered-By header is present\", function () {\r",
+									"    pm.response.to.have.header(\"X-Powered-By\")\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response id is equal to requested id\", function () {\r",
+									"    pm.expect(responseJson.id).to.eql(Number(pm.environment.get('prodId')))\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/{{prodId}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"products",
-								"3"
+								"{{prodId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get non-existing product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 100ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"X-Powered-By header is present\", function () {\r",
+									"    pm.response.to.have.header(\"X-Powered-By\")\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/{{invalidProdId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"{{invalidProdId}}"
 							]
 						}
 					},
@@ -65,12 +282,75 @@
 				},
 				{
 					"name": "Create product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()\r",
+									"const newProductId = pm.environment.get('prevProductsCount') + 1\r",
+									"\r",
+									"\r",
+									"pm.test('Response price is equal to request price', () => {\r",
+									"    pm.expect(responseJson.price).to.eql(Number(pm.environment.get('prodPrice')))\r",
+									"})\r",
+									"\r",
+									"pm.test('Response description is equal to request description', () => {\r",
+									"    pm.expect(responseJson.description).to.equal(pm.environment.get('prodDescription'))\r",
+									"})\r",
+									"\r",
+									"pm.test('New Id is last id + 1', () => {\r",
+									"    pm.expect(responseJson.id).to.eql(newProductId)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time is less than 100ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+									"})\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"ETag header is present\", function () {\r",
+									"    pm.response.to.have.header(\"ETag\")\r",
+									"})\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:3000/products/${newProductId}`,\r",
+									"    method: 'DELETE'\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest('http://localhost:3000/products', (err, res) => {\r",
+									"    if (!err) {\r",
+									"        const products = res.json()\r",
+									"        pm.environment.set('prevProductsCount', products.length)\r",
+									"    } else {\r",
+									"        console.error('Can not get products list', err)\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"orange\",\r\n    \"price\": 8,\r\n    \"sku\": 123321123,\r\n    \"description\": \"wouh\"\r\n}",
+							"raw": "{\r\n    \"name\": \"{{prodName}}\",\r\n    \"price\": {{prodPrice}},\r\n    \"sku\": 123321123,\r\n    \"description\": \"{{prodDescription}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -91,12 +371,47 @@
 				},
 				{
 					"name": "Update product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()\r",
+									"\r",
+									"pm.test('Response updated price is equal to request updated price', () => {\r",
+									"    pm.expect(responseJson.price).to.eql(Number(pm.environment.get('updatedProdPrice')))\r",
+									"})\r",
+									"\r",
+									"pm.test('Response updated description is equal to request updated description', () => {\r",
+									"    pm.expect(responseJson.description).to.eql(pm.environment.get('updatedProdDescription'))\r",
+									"})\r",
+									"\r",
+									"pm.test('Response updated name is equal to request updated name', () => {\r",
+									"    pm.expect(responseJson.name).to.eql(pm.environment.get('updatedProdName'))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time is less than 100ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+									"})\r",
+									"pm.test(\"Status code is OK\", function () {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"pm.test(\"Connection header is present\", function () {\r",
+									"    pm.response.to.have.header(\"Connection\")\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 4,\r\n    \"name\": \"banana\",\r\n    \"price\": 155,\r\n    \"sku\": 123321123,\r\n    \"description\": \"changed description\"\r\n}",
+							"raw": "{\r\n    \"id\": 3,\r\n    \"name\": \"{{updatedProdName}}\",\r\n    \"price\": {{updatedProdPrice}},\r\n    \"sku\": 123321123,\r\n    \"description\": \"{{updatedProdDescription}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -117,17 +432,82 @@
 				},
 				{
 					"name": "Remove product by ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:3000/products',\r",
+									"    method: 'POST',\r",
+									"    header: { 'Content-Type': 'application/json' },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            name: \"temp product\",\r",
+									"            price: 99,\r",
+									"            sku: 123456789,\r",
+									"            description: \"temporary test item\"\r",
+									"        })\r",
+									"    }\r",
+									"}, (err, res) => {\r",
+									"    if (!err) {\r",
+									"        const created = res.json();\r",
+									"        pm.environment.set('createdId', created.id)    \r",
+									"    } \r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const deletedId = Number(pm.environment.get('createdId'))\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time < 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"})\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"  url: `http://localhost:3000/products/${deletedId}`,\r",
+									"  method: 'GET'\r",
+									"}, (error, response) => {\r",
+									"  if (error) {\r",
+									"    console.error(error)\r",
+									"  } else {\r",
+									"    pm.test(`Product with id=${deletedId} no longer exists`, function () {\r",
+									"      pm.expect(response.code).to.be.oneOf([404, 500])\r",
+									"    })\r",
+									"  }\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/4",
+							"raw": "{{baseUrl}}/products/{{createdId}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"products",
-								"4"
+								"{{createdId}}"
 							]
 						}
 					},
@@ -140,6 +520,55 @@
 			"item": [
 				{
 					"name": "List orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"const schema = {\r",
+									"    \"type\": \"array\",\r",
+									"    \"maxItems\": 3,\r",
+									"    \"items\": {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"        \"id\": {\"type\": \"integer\"},\r",
+									"        \"name\": {\"type\": \"string\"},\r",
+									"        \"sku\": {\"type\": \"integer\"}\r",
+									"        },\r",
+									"        \"required\": [\"id\", \"name\", \"sku\" ],\r",
+									"        \"additionalProperties\": false\r",
+									"    }\r",
+									"}\r",
+									"pm.test('Schema validation', () => {\r",
+									"    pm.response.to.have.jsonSchema(schema)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\")\r",
+									"})\r",
+									"\r",
+									"pm.test('Response has a non-empty array of orders', () => {\r",
+									"    pm.expect(responseJson).to.be.an('array').that.is.not.empty\r",
+									"})\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -157,17 +586,91 @@
 				},
 				{
 					"name": "Get order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response id is equal to request id\", function () {\r",
+									"  pm.expect(responseJson.id).to.eql(Number(pm.environment.get('orderId')))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time is less than 100ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"X-Powered-By header is present\", function () {\r",
+									"    pm.response.to.have.header(\"X-Powered-By\")\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/orders/3",
+							"raw": "{{baseUrl}}/orders/{{orderId}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"orders",
-								"3"
+								"{{orderId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get non-existing order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 100ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"X-Powered-By header is present\", function () {\r",
+									"    pm.response.to.have.header(\"X-Powered-By\")\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/{{invalidOrderId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"{{invalidOrderId}}"
 							]
 						}
 					},
@@ -175,12 +678,71 @@
 				},
 				{
 					"name": "Create order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()\r",
+									"const newOrderId = pm.environment.get('prevOrdersCount') + 1\r",
+									"\r",
+									"\r",
+									"pm.test('Response name is equal to request name', () => {\r",
+									"pm.expect(responseJson.name).to.eql(pm.environment.get('newOrderName'))\r",
+									"})\r",
+									"\r",
+									"pm.test('New Id is max orders id + 1', () => {\r",
+									"pm.expect(responseJson.id).to.eql(newOrderId)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time is less than 100ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"ETag header is present\", function () {\r",
+									"    pm.response.to.have.header(\"ETag\")\r",
+									"})\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:3000/orders/${newOrderId}`,\r",
+									"    method: 'DELETE'\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest('http://localhost:3000/orders', (err, res) => {\r",
+									"    if (!err) {\r",
+									"        const orders = res.json()\r",
+									"        pm.environment.set('prevOrdersCount', orders.length)\r",
+									"    } else {\r",
+									"        console.error('Can not get orders list', err)\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"order5\",\r\n    \"sku\": 123425445656765\r\n}",
+							"raw": "{\r\n    \"name\": \"{{newOrderName}}\",\r\n    \"sku\": 123425445656765\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -201,12 +763,46 @@
 				},
 				{
 					"name": "Update order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"\r",
+									"\r",
+									"pm.test('Response updated name is equal to request updated name', () => {\r",
+									"    pm.expect(responseJson.name).to.eql(pm.environment.get('updatedOrderName'))\r",
+									"})\r",
+									"\r",
+									"pm.test('New Id is equal 3', () => {\r",
+									"    pm.expect(responseJson.id).to.eql(3)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time is less than 100ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Connection header is present\", function () {\r",
+									"    pm.response.to.have.header(\"Connection\")\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 4,\r\n    \"name\": \"order5\",\r\n    \"sku\": 123425445656765\r\n}",
+							"raw": "{\r\n    \"id\": 3,\r\n    \"name\": \"{{updatedOrderName}}\",\r\n    \"sku\": 123425445656765\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -227,17 +823,81 @@
 				},
 				{
 					"name": "Remove order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const deletedId = Number(pm.environment.get('createdOrderId'))\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time < 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"  url: `http://localhost:3000/orders/${deletedId}`,\r",
+									"  method: 'GET'\r",
+									"}, (error, response) => {\r",
+									"  if (error) {\r",
+									"    console.error(error)\r",
+									"  } else {\r",
+									"    pm.test(`Order with id=${deletedId} no longer exists`, function () {\r",
+									"      pm.expect(response.code).to.be.oneOf([404, 500])\r",
+									"    })\r",
+									"  }\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:3000/orders',\r",
+									"    method: 'POST',\r",
+									"    header: { 'Content-Type': 'application/json' },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            name: \"temp order\",\r",
+									"            sku: 123456789\r",
+									"        })\r",
+									"    }\r",
+									"}, (err, res) => {\r",
+									"    if (!err) {\r",
+									"        const created = res.json()\r",
+									"        pm.environment.set('createdOrderId', created.id)    \r",
+									"    } \r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/orders/4",
+							"raw": "{{baseUrl}}/orders/{{createdOrderId}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"orders",
-								"4"
+								"{{createdOrderId}}"
 							]
 						}
 					},
@@ -250,6 +910,61 @@
 			"item": [
 				{
 					"name": "List users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()\r",
+									"const schema = {\r",
+									"    \"type\": \"array\",\r",
+									"    \"maxItems\": 9,\r",
+									"    \"items\": {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"        \"id\": {\"type\": \"integer\"},\r",
+									"        \"firstName\": {\"type\": \"string\"},\r",
+									"        \"lastName\": {\"type\": \"string\"},\r",
+									"        \"email\": {\"type\": \"string\"},\r",
+									"        \"dateOfBirth\": {\"type\": \"string\"},\r",
+									"        \"emailVerified\": {\"type\": \"boolean\"},\r",
+									"        \"signUpDate\": {\"type\": \"string\"},\r",
+									"        \"status\": {\"type\": \"string\"},\r",
+									"        \"level\": {\"type\": \"string\"}\r",
+									"        },\r",
+									"        \"required\": [\"firstName\",\"lastName\",\"email\",\"dateOfBirth\",\"emailVerified\",\"signUpDate\",\"status\",\"level\"],\r",
+									"        \"additionalProperties\": false\r",
+									"    } \r",
+									"}\r",
+									"\r",
+									"\r",
+									"pm.test('schema validator', () => {\r",
+									"    pm.response.to.have.jsonSchema(schema)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\")\r",
+									"})\r",
+									"\r",
+									"pm.test('Response has a non-empty array of users', () => {\r",
+									"    pm.expect(responseJson).to.be.an('array').that.is.not.empty\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -267,17 +982,92 @@
 				},
 				{
 					"name": "Get user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response id is equal to request id\", function () {\r",
+									"    pm.expect(responseJson.id).to.eql(Number(pm.environment.get('userId')))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time is less than 100ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"X-Powered-By header is present\", function () {\r",
+									"    pm.response.to.have.header(\"X-Powered-By\");\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/users/3",
+							"raw": "{{baseUrl}}/users/{{userId}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"users",
-								"3"
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get  non-existing user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 100ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"X-Powered-By header is present\", function () {\r",
+									"    pm.response.to.have.header(\"X-Powered-By\")\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{invalidUserId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{invalidUserId}}"
 							]
 						}
 					},
@@ -285,12 +1075,94 @@
 				},
 				{
 					"name": "Create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()\r",
+									"const newUserId = pm.environment.get('prevUsersCount') + 1\r",
+									"\r",
+									"\r",
+									"pm.test('Response first Name is equal to request first Name', () => {\r",
+									"    pm.expect(responseJson.firstName).to.eql(pm.environment.get('newUserFirstname'))\r",
+									"})\r",
+									"\r",
+									"pm.test('Response Lastname is equal to request lastname', () => {\r",
+									"    pm.expect(responseJson.lastName).to.eql(pm.environment.get('newUserLastname'))\r",
+									"})\r",
+									"\r",
+									"pm.test('Response status is equal to request status', () => {\r",
+									"    pm.expect(responseJson.status).to.eql(pm.environment.get('newUserStatus'))\r",
+									"})\r",
+									"\r",
+									"pm.test('Response email is equal to request email', () => {\r",
+									"    pm.expect(responseJson.email).to.eql(pm.environment.get('newUserEmail'))\r",
+									"})\r",
+									"\r",
+									"pm.test('Response date of birth is equal to request date of birth', () => {\r",
+									"    pm.expect(responseJson.dateOfBirth).to.eql(pm.environment.get('newUserDateOfBirth'))\r",
+									"})\r",
+									"\r",
+									"pm.test('Response sign up date is equal to request sign up date ', () => {\r",
+									"    pm.expect(responseJson.signUpDate).to.eql(pm.environment.get('newUserSignUpDate'))\r",
+									"})\r",
+									"\r",
+									"pm.test('Response level is equal to request level', () => {\r",
+									"    pm.expect(responseJson.level).to.eql(pm.environment.get('newUserLevel'))\r",
+									"}) \r",
+									"pm.test('New Id is equal to previous user count + 1', () => {\r",
+									"    pm.expect(responseJson.id).to.eql(newUserId)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time is less than 100ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"ETag header is present\", function () {\r",
+									"    pm.response.to.have.header(\"ETag\");\r",
+									"})\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `http://localhost:3000/users/${newUserId}`,\r",
+									"    method: 'DELETE'\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest('http://localhost:3000/users', (err, res) => {\r",
+									"    if (!err) {\r",
+									"        const users = res.json()\r",
+									"        pm.environment.set('prevUsersCount', users.length)\r",
+									"    } else {\r",
+									"        console.error('Can not get users list', err)\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Dream\",\r\n    \"lastName\": \"Real\",\r\n    \"email\": \"dream.real@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\"\r\n}",
+							"raw": "{\r\n    \"firstName\": \"{{newUserFirstname}}\",\r\n    \"lastName\": \"{{newUserLastname}}\",\r\n    \"email\": \"{{newUserEmail}}\",\r\n    \"dateOfBirth\": \"{{newUserDateOfBirth}}\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"{{newUserSignUpDate}}\",\r\n    \"status\": \"{{newUserStatus}}\",\r\n    \"level\": \"{{newUserLevel}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -311,12 +1183,54 @@
 				},
 				{
 					"name": "Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json()\r",
+									"\r",
+									"\r",
+									"pm.test('Response updated First Name is equal to request updated Firstname', () => {\r",
+									"    pm.expect(responseJson.firstName).to.eql(pm.environment.get('updatedUserFirstname'))\r",
+									"})\r",
+									"\r",
+									"pm.test('Response updated Last Name is equal to request updated Lastname', () => {\r",
+									"    pm.expect(responseJson.lastName).to.eql(pm.environment.get('updatedUserLastname'))\r",
+									"})\r",
+									"\r",
+									"pm.test('Response updated level is equal to request updated level', () => {\r",
+									"    pm.expect(responseJson.level).to.eql(pm.environment.get('updatedUserLevel'))\r",
+									"})\r",
+									"\r",
+									"pm.test('new Id is equal 10', () => {\r",
+									"    pm.expect(responseJson.id).to.eql(Number(pm.environment.get('updatedUserId')))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Response time is less than 100ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Connection header is present\", function () {\r",
+									"    pm.response.to.have.header(\"Connection\")\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Ilon\",\r\n    \"lastName\": \"Mask\",\r\n    \"email\": \"ilon.mask@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\",\r\n    \"id\": 10\r\n}",
+							"raw": "{\r\n    \"firstName\": \"{{updatedUserFirstname}}\",\r\n    \"lastName\": \"{{updatedUserLastname}}\",\r\n    \"email\": \"carlurban12@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"{{updatedUserLevel}}\",\r\n    \"id\": {{updatedUserId}}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -337,17 +1251,87 @@
 				},
 				{
 					"name": "Remove user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const deletedId = Number(pm.environment.get('createdUserId'))\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time < 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"  url: `http://localhost:3000/users/${deletedId}`,\r",
+									"  method: 'GET'\r",
+									"}, (error, response) => {\r",
+									"  if (error) {\r",
+									"    console.error(error)\r",
+									"  } else {\r",
+									"    pm.test(`User with id=${deletedId} no longer exists`, function () {\r",
+									"      pm.expect(response.code).to.be.oneOf([404, 500])\r",
+									"    })\r",
+									"  }\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'http://localhost:3000/users',\r",
+									"    method: 'POST',\r",
+									"    header: { 'Content-Type': 'application/json' },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"        \"firstName\": \"Jhonny\",\r",
+									"        \"lastName\": \"Depp\",\r",
+									"        \"email\": \"jack.sparrow@gmail.com\",\r",
+									"        \"dateOfBirth\": \"1534-10-31\",\r",
+									"        \"emailVerified\": true,\r",
+									"        \"signUpDate\": \"2025-01-01\",\r",
+									"        \"status\": \"active\",\r",
+									"        \"level\": \"captain\"\r",
+									"    })\r",
+									"    }\r",
+									"}, (err, res) => {\r",
+									"    if (!err) {\r",
+									"        const created = res.json()\r",
+									"        pm.environment.set('createdUserId', created.id)    \r",
+									"    } \r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/users/10",
+							"raw": "{{baseUrl}}/users/{{createdUserId}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"users",
-								"10"
+								"{{createdUserId}}"
 							]
 						}
 					},
@@ -361,6 +1345,7 @@
 			"listen": "prerequest",
 			"script": {
 				"type": "text/javascript",
+				"requests": {},
 				"exec": [
 					""
 				]
@@ -370,17 +1355,11 @@
 			"listen": "test",
 			"script": {
 				"type": "text/javascript",
+				"requests": {},
 				"exec": [
 					""
 				]
 			}
-		}
-	],
-	"variable": [
-		{
-			"key": "baseUrl",
-			"value": "http://localhost:3000",
-			"type": "string"
 		}
 	]
 }

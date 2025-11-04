@@ -13,10 +13,10 @@ products:
     description: Most lettuce varieties are eaten fresh and are commonly served as
       the base of green salads
   - id: 3
-    name: apple
-    price: 30
-    sku: 999921312423312
-    description: awesome
+    name: not a melon
+    price: 20
+    sku: 123321123
+    description: mmm not a melon
 orders:
   - id: 1
     name: order1
@@ -25,14 +25,14 @@ orders:
     name: order2
     sku: 999921312423
   - id: 3
-    name: order2
-    sku: 999921312423312
+    name: updated order name 512
+    sku: 123425445656765
 users:
   - id: 1
-    firstName: Alice
-    lastName: Smith
-    email: alice.smith@gmail.com
-    dateOfBirth: 1997-10-31
+    firstName: Carl
+    lastName: Urban
+    email: carlurban12@gmail.com
+    dateOfBirth: 2001-10-99
     emailVerified: true
     signUpDate: 2019-08-24
     status: active
@@ -101,15 +101,6 @@ users:
     status: active
     level: consumer
   - id: 9
-    firstName: asdasd
-    lastName: asd
-    email: asdasd.smith@gmail.com
-    dateOfBirth: 1997-10-31
-    emailVerified: false
-    signUpDate: 2019-08-24
-    status: active
-    level: consumer
-  - id: 10
     firstName: asdasd
     lastName: asd
     email: asdasd.smith@gmail.com
