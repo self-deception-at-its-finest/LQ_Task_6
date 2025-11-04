@@ -1,0 +1,44 @@
+name: Postman_Newman API Tests
+on:
+  push:
+    branches:
+      - LQB-24
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: install dependencies
+        run: npm i
+
+      - name: Install newman
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+
+      - name: Make Directory for results and launch local server
+        run: npm run tern-on-api & mkdir -p test-results
+
+      - name: Run POSTMAN collection
+        run: |
+          newman run store.collection.json -e store.postman_environment.json -r htmlextra --reporter-htmlextra-export test-results/index.html
+
+      - name: Upload artifact report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: report
+          path: ./test-results
+      - name: Deploy to pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3.7.3
+        with:
+          github_token: ${{ secrets.GH_PAT }}
+          publish_branch: test-results
+          publish_dir: test-results/
