@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - LQB-24
+  pull_request:
 jobs:
   test-api:
     runs-on: ubuntu-latest
